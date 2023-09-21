@@ -1,0 +1,12 @@
+
+{
+    "BSSID":"WIFINAME",
+    "PW":"WIFIPASSWORD",
+    "MQTT_SERVER":"serverName",
+    "MQTT_PORT":1883,
+    "MQTT_USER":"MQTT_USER",
+    "MQTT_PW":"12345678",
+    "lights":[{"name":"LIGHTRGB","channels":[0,1,2],"type":"rgb"},
+        {"name":"LIGHTRGBW","channels":[4,5,6,7],"type":"rgbw"}
+            ]
+}
