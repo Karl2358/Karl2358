@@ -1,6 +1,6 @@
 #include "ota.h"
 #include <ArduinoOTA.h>
-#include <FS.h>
+#include <LittleFS.h>
 using namespace ota;
 
 otaRunner::otaRunner(/* args */)
@@ -9,12 +9,12 @@ otaRunner::otaRunner(/* args */)
                 String type;
                 if (ArduinoOTA.getCommand() == U_FLASH) {
                         type = "sketch";
-                } else { // U_SPIFFS
-                        SPIFFS.end();
+                } else { // U_LittleFS
+                        LittleFS.end();
                         type = "filesystem";
                 }
 
-                // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+                // NOTE: if updating LittleFS this would be the place to unmount LittleFS using LittleFS.end()
 #ifdef  debug
                 Serial.println("Start updating " + type);
   #endif

@@ -25,8 +25,9 @@ void LightControler::addLight(String light,int* channelList,lightModel::lightTyp
 }
 
 void LightControler::removeLight(String light){
-    delete lightList[light];
+    lightModel::LightModel* model =lightList[light];
     lightList.erase(light);
+    delete model;
 }
 
 void LightControler::changeLight(String light,int* channelList,lightModel::lightType type){
@@ -106,7 +107,6 @@ hsb LightControler::getHsbOld(String light){
     if(cMax==g) h = 60*(((b-r)/delta)+2);
     if(cMax==b) h = 60*(((r-g)/delta)+4);
     if(delta==0.0) h =0.0;
-    float B = cMax;
     float s = 0.0;
     if(cMax>0) s = delta/cMax; 
     hsb _hsb;
@@ -279,8 +279,8 @@ void LightControler::storeLight(String lightName,String _file){
     char JSONmessageBuffer[400];
     serializeJson(light, JSONmessageBuffer);
     _logger->logDebug(module,"light name "+String(JSONmessageBuffer));
-    if(!lights.getElement(count).isNull()){
-        lights.getElement(count).set(light);
+    if(!lights[count].isNull()){
+        lights[count].set(light);
     }else lights.add(light);
 
     storeC->storeJson(&doc,_file);

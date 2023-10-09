@@ -11,7 +11,7 @@
 #include <StorageControler.h>
 #include <StatusLed.h>
 #include <HttpServer.h>
-#include <FS.h>
+#include <LittleFS.h>
 
 
 
@@ -27,46 +27,22 @@ HttpServer _HttpServer;
 
 //real
 String module = String("Main Module");
-Task test(10*TASK_SECOND,100,[](){
-  Serial.println("test2");
-},&sched);
 
 Task update(10*TASK_SECOND,TASK_FOREVER,[](){
   mqttCtrl->publishUpdate();
 },&sched);
 
-Task reset(TASK_IMMEDIATE,1,[](){
-  _logger->logDebug("Daily reset","Resetting...");
-  SPIFFS.end();
-  ESP.restart();
-},&sched);
-
-Task getHeap(60*TASK_SECOND,TASK_FOREVER,[](){
-  int freeHeap = ESP.getFreeHeap();
-  if(freeHeap<1300){
-    _logger->logDebug("HeapChecker","free Heapsize: "+String(freeHeap)+"KB");
-    _logger->logDebug("HeapChecker","RESTART.....");
-    SPIFFS.end();
-    ESP.restart();
-  }
-},&sched);
 
 Task checkWifi(10*TASK_SECOND,TASK_FOREVER,[](){
   // _logger->logDebug("check Wifi",String(WiFi.isConnected()));
   if(!WiFi.isConnected()){
     _logger->logDebug("check Wifi",String(WiFi.isConnected()));
     _logger->logDebug("check Wifi", "Restart...");
-    SPIFFS.end();/*  */
+    LittleFS.end();/*  */
     ESP.restart();
   }
 },&sched);
 
-void taskResetSerial(){
-        Serial.end();
-
-        Serial.begin(250000);
-        Serial.println("reset Serial");
-}
 
 Task resetSerial(10*TASK_MINUTE,TASK_FOREVER,[](){
         _logger->logDebug("reset Serial","Resetting...");
@@ -132,8 +108,6 @@ void setup() {
   _logger->logDebug(module,String("Setup Ende"));
   // test.enableIfNot();
   // reset.enableDelayed(7*24*60*TASK_MINUTE);
-  resetSerial.enableIfNot();
-  getHeap.enableIfNot();
   checkWifi.enableIfNot();
   rHTTP.enableIfNot();
   update.enableDelayed(10*TASK_SECOND);

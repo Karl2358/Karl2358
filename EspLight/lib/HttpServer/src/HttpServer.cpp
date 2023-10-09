@@ -1,7 +1,8 @@
 
 #include "HttpServer.h"
+#include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-#include <FS.h>
+#include <LittleFS.h>
 #define debug
 
 // Création des objets / create Objects
@@ -38,7 +39,7 @@ void HttpServer::setup(int port) {
 
 }
 void HttpServer::handleRoot() {
-  Dir dir = SPIFFS.openDir("/logs");
+  Dir dir = LittleFS.openDir("/logs");
   String files = "";
   while(dir.next()){
     files = files+"<a href=\""+dir.fileName().substring(1)+"\">"+dir.fileName()+"</a><br>";
@@ -60,7 +61,7 @@ void HttpServer::notFound(){
 void HttpServer::handleUnknown(){
    String filename = server->uri();
 
-  File pageFile = SPIFFS.open(filename, "r");
+  File pageFile = LittleFS.open(filename, "r");
   if (pageFile){
     String contentTyp = "";
     if(filename.endsWith(".ico")){

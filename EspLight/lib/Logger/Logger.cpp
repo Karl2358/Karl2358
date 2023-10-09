@@ -1,6 +1,6 @@
 #include "Logger.h"
 #include <Arduino.h>
-#include <FS.h>
+#include <LittleFS.h>
 #include <math.h>
 using namespace logger;
 
@@ -37,7 +37,7 @@ Logger::Logger(){
     }
     // String logEntry = "log";
     //     // logEntry.replace(" ","");
-    // f = SPIFFS.open("/logs/"+logEntry+".txt", "a");
+    // f = LittleFS.open("/logs/"+logEntry+".txt", "a");
     
     
 }
@@ -73,20 +73,20 @@ void Logger::logInfo(String module, String msg){
 
 void Logger::logToFile(String module, String msg){
         // FSInfo fs_info;
-        // SPIFFS.info(fs_info);
+        // LittleFS.info(fs_info);
         // Serial.print("Free Space on FS: ");
         // Serial.println(fs_info.totalBytes-fs_info.usedBytes);
         //String logEntry = String(module);
         String logEntry = "log";
         // // logEntry.replace(" ","");
-        f = SPIFFS.open("/logs/"+logEntry+".txt", "a");
+        f = LittleFS.open("/logs/"+logEntry+".txt", "a");
         if(f.size()>100000){
             // Serial.print("File Size FS: ");
             // Serial.println(f.size());
             f.close();
-            SPIFFS.remove("/logs/"+logEntry+"_OLD.txt");
-            SPIFFS.rename("/logs/"+logEntry+".txt","/logs/"+logEntry+"_OLD.txt");
-            f = SPIFFS.open("/logs/"+logEntry+".txt", "w");
+            LittleFS.remove("/logs/"+logEntry+"_OLD.txt");
+            LittleFS.rename("/logs/"+logEntry+".txt","/logs/"+logEntry+"_OLD.txt");
+            f = LittleFS.open("/logs/"+logEntry+".txt", "w");
         }
         if(loggingLevel==0){
             module += " DEBUG";

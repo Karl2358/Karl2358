@@ -1,5 +1,5 @@
 #include "StorageControler.h"
-#include <FS.h>
+#include <LittleFS.h>
 //#define debug
 using namespace store;
 
@@ -16,20 +16,20 @@ StorageControler* StorageControler::Intance(){
 
 StorageControler::StorageControler(/* args */)    {
         _logger = logger::Logger::Intance();
-        if (!SPIFFS.begin()){
+        if (!LittleFS.begin()){
                 // Serious problem
-            _logger->logDebug(module,"SPIFFS Mount failed");
+            _logger->logDebug(module,"LittleFS Mount failed");
         }else{
-            _logger->logDebug(module,"SPIFFS Mount sucessful");
+            _logger->logDebug(module,"LittleFS Mount sucessful");
         }
 }
     
 StorageControler::~StorageControler()    {
-        SPIFFS.end();
+        LittleFS.end();
 }
 void StorageControler::loadJson(JsonDocument* doc, String fileName){
     _logger->logDebug(module,"Load JSon");
-    File file = SPIFFS.open(fileName.c_str(),"r");
+    File file = LittleFS.open(fileName.c_str(),"r");
     _logger->logDebug(module,"Loaded File" +fileName)
     ;
     if(!file){
@@ -47,14 +47,14 @@ void StorageControler::loadJson(JsonDocument* doc, String fileName){
 }
 void StorageControler::storeJson(JsonDocument* doc, String fileName){
     _logger->logDebug(module,"Store Json");
-    File file = SPIFFS.open(fileName.c_str(),"w");
+    File file = LittleFS.open(fileName.c_str(),"w");
     if(!file){
         _logger->logInfo(module,"File "+fileName+" opened");
     }else{
         serializeJson(*doc,file);
         file.close();
         #ifdef debug
-            file = SPIFFS.open(fileName.c_str(),"r");
+            file = LittleFS.open(fileName.c_str(),"r");
             _logger->logDebug(module,file.readString());
         #endif
     }

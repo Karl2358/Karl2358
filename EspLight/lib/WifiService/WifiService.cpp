@@ -1,5 +1,6 @@
 #include "WifiService.h"
 #include "StatusLed.h"
+#include "LittleFS.h"
 using namespace wifi;
 
 WifiService* WifiService::m_pInstance=NULL;
@@ -40,7 +41,7 @@ void WifiService::start(){
         _logger->logInfo(modul,"Connecting..");
         delay ( 500 );
         if(counter++ >10){
-            SPIFFS.end();
+            LittleFS.end();
             ESP.restart();
         }
     }
